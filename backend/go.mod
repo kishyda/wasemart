@@ -1,4 +1,4 @@
-module backend
+module wasemart
 
 go 1.24
 
@@ -7,9 +7,14 @@ require (
 	go.mongodb.org/mongo-driver/v2 v2.0.0 // direct
 )
 
-require github.com/gorilla/websocket v1.5.3
+require (
+	github.com/gorilla/websocket v1.5.3
+	github.com/lib/pq v1.10.9
+	golang.org/x/oauth2 v0.29.0
+)
 
 require (
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
 	github.com/xdg-go/pbkdf2 v1.0.0 // indirect

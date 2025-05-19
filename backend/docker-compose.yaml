@@ -1,0 +1,21 @@
+version: '3.8'  # specify a version to ensure compatibility
+
+services:
+  postgres:
+    image: postgres 
+    ports:
+      - '5432:5432'
+    volumes:
+      - dbdata6:/data/db
+    environment:
+      POSTGRES_PASSWORD: "password"  # Password for the postgres superuser
+      POSTGRES_USER: "postgres"      # User for PostgreSQL
+      POSTGRES_DB: "main"
+
+
+networks:
+  mynetworks:
+    driver: bridge
+
+volumes:
+  dbdata6:   # Declare volume here if not predefined
