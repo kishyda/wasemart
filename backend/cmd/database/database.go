@@ -1,58 +1,39 @@
 package database
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
+	"os"
+	"wasemart/cmd/models"
 
-	_ "github.com/lib/pq"
-	"go.mongodb.org/mongo-driver/v2/mongo"
-	"go.mongodb.org/mongo-driver/v2/mongo/options"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
-var database *sql.DB
+var DB *gorm.DB
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "password"
-	dbname   = "main"
-)
-
-func ConnectToPostgresqlDatabase() *sql.DB {
-
-	if database != nil {
-		return database
+func ConnectToPostgresqlDatabase() *gorm.DB {
+	if DB != nil {
+		return DB
 	}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s " +
-		"password=%s dbname=%s sslmode=disable",
+	var (
+		host     = os.Getenv("DB_HOST")
+		port     = os.Getenv("DB_PORT")
+		user     = os.Getenv("DB_USER")
+		password = os.Getenv("DB_PASSWORD")
+		dbname   = os.Getenv("DB_NAME")
+	)
+
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	db, err := sql.Open("postgres", psqlInfo)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		panic(err)
+		panic(fmt.Sprintf("Failed to connect to database: %v", err))
 	}
 
-	err = db.Ping()
-
-	if err != nil {
-        fmt.Print(err)
-		panic(err)
-	}
-    database = db
-	fmt.Println("Successfully connected!")
-    return db
-}
-
-func ConnectToMongoDatabase() *mongo.Database {
-	client, err := mongo.Connect(options.Client().ApplyURI("mongodb://localhost:27017"))
-	if err != nil {
-		panic(err)
-	}
-	if err := client.Ping(context.TODO(), nil); err != nil {
-		print("Error in connecting to MongoDB client ", err)
-	}
-	return client.Database("db")
+	DB = db
+	fmt.Println("Successfully connected with GORM!")
+	db.AutoMigrate(&models.User{}, &models.Ad{}, &models.Chat{}, &models.Message{})
+	return db
 }

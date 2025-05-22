@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS Message (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     chat_id UUID NOT NULL REFERENCES Chat(id) ON DELETE CASCADE,
     from_user UUID NOT NULL REFERENCES "User"(id),
+    to_user UUID NOT NULL REFERENCES "User"(id),
     message VARCHAR(100) NOT NULL,
     timestamp TIMESTAMP DEFAULT NOW()
 );

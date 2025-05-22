@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"wasemart/cmd/database"
-	"wasemart/cmd/types"
+	"wasemart/cmd/models"
 
 	"github.com/gorilla/websocket"
 )
@@ -21,42 +21,43 @@ type Connections map[string]*websocket.Conn
 
 var connections Connections = make(map[string]*websocket.Conn)
 
-func (c *Connections) sendMessage(m *types.Message) {
-	conn, ok := connections[m.To]
-	if ok {
+func (c *Connections) sendMessage(m *models.Message) {
+	database.ConnectToPostgresqlDatabase().Exec("")
+	conn, ok := connections[m.ToUser.String()]; if ok {
 		conn.WriteJSON(m)
 	}
+	database.InsertNewMessage(database.DB, m)
 }
 
 func HandleWebSocketConnection(w http.ResponseWriter, r *http.Request) {
-    fmt.Println("connection made")
-    conn, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    if conn == nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        return
-    }
-    id, err := r.Cookie("id")
-    if err != nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        w.Write([]byte(err.Error()))
-    }
-    connections[id.Value] = conn
-    go func() {
-        for {
-            defer conn.Close()
-            defer delete(connections, id.Value)
-            message := types.Message{}
-            if error := conn.ReadJSON(&message); error != nil {
-                println("Perhaps the connection is closed?", error)
-                break
-            }
-            fmt.Println(message)
-            conn.WriteJSON(message)
-            connections.sendMessage(&message)
-        }
-    }()
+	fmt.Println("connection made")
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if conn == nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	id, err := r.Cookie("id")
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+	connections[id.Value] = conn
+	go func() {
+		for {
+			defer conn.Close()
+			defer delete(connections, id.Value)
+			message := models.Message{}
+			if error := conn.ReadJSON(&message); error != nil {
+				println("Perhaps the connection is closed?", error)
+				break
+			}
+			fmt.Println(message)
+			conn.WriteJSON(message)
+			connections.sendMessage(&message)
+		}
+	}()
 }
