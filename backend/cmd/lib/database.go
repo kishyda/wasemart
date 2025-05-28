@@ -1,4 +1,4 @@
-package database
+package lib 
 
 import (
 	"database/sql"
@@ -23,7 +23,7 @@ func ConnectToPostgresqlDatabase() {
 	// 	password = os.Getenv("DB_PASSWORD")
 	// 	dbname   = os.Getenv("DB_NAME")
 	// )
-	//
+
 	// defaultDBConnStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=postgres sslmode=disable", host, port, user, password)
 
 	dbname := os.Getenv("DB_NAME")

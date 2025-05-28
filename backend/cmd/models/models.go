@@ -1,8 +1,10 @@
-package models 
+package models
 
 import (
 	"time"
-    "github.com/google/uuid"
+
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 )
 
 type User struct {
@@ -23,8 +25,8 @@ type Ad struct {
 	Description string    `gorm:"type:varchar(1000);not null"`
 	Contact     string    `gorm:"type:varchar(100);not null"`
 
-	Pictures    []string  `gorm:"type:varchar(100)[];not null"`
-	Locations   []string  `gorm:"type:varchar(100)[];not null"`
+	Pictures    pq.StringArray  `gorm:"type:varchar(100)[];not null"`
+	Locations   pq.StringArray  `gorm:"type:varchar(100)[];not null"`
 }
 
 type Chat struct {
