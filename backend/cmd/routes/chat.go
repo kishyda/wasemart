@@ -49,9 +49,6 @@ func HandleWebSocketConnection(w http.ResponseWriter, r *http.Request) {
 		log.Println("Connection is nil")
 		return
 	}
-	if err != nil {
-		log.Println("Error getting cookie:", err)
-	}
 	connections[id] = conn
 	go func() {
 		for {

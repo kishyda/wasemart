@@ -31,6 +31,11 @@ func CORSHandler(next http.Handler) http.Handler {
 
 func main() {
 
+	defer func() {
+		if r := recover(); r != nil {
+		}
+	}()
+
 	lib.ConnectToPostgresqlDatabase()
     routes.RegisterRoutes()
 
