@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"wasemart/cmd/lib"
 	"wasemart/cmd/models"
 
@@ -62,6 +63,11 @@ func HandleWebSocketConnection(w http.ResponseWriter, r *http.Request) {
 			connections.sendMessage(&message)
 		}
 	}()
+}
+
+func handleChatByID(w http.ResponseWriter, r *http.Request) {
+	id := strings.TrimPrefix(r.URL.Path, "/chat/")
+	log.Println("Chat ID:", id)
 }
 
 func handleChat(w http.ResponseWriter, r *http.Request) {

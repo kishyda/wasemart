@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+
 	// "os"
 	"wasemart/cmd/lib"
 	"wasemart/cmd/routes"
@@ -60,5 +62,6 @@ func main() {
 	// 	http.ServeFile(w, r, "./build/index.html")
 	// })))
 
+	log.Println("Server is running on port 8080")
 	http.ListenAndServe(":8080", nil)
 }
