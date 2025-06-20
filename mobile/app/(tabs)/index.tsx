@@ -1,79 +1,60 @@
-import { useRef, useState } from 'react';
-import { View, Platform, StyleSheet, Text, FlatList, TouchableOpacity, Dimensions } from 'react-native';
-import { SearchBar } from '@rneui/themed';
-import { Link } from 'expo-router';
-
-const sampleData = [
-  "Apple1",
-  "Apple2",
-  "Apple3",
-  "Apple4",
-  "Apple5",
-  "Apple6",
-  "Apple7",
-  "Apple8",
-  "Apple9",
-  "Banana",
-  "Cherry",
-  "Date",
-  "Grape",
-  "Orange",
-  "Peach",
-  "Strawberry",
-  "Watermelon",
-];
+import { useRef, useState } from "react";
+import { View, Platform, StyleSheet, Text, FlatList, TouchableOpacity, Dimensions, Image } from "react-native";
+import { SearchBar } from "@rneui/themed";
+import { Link } from "expo-router";
+import Bazaar from "@/components/ui/Bazaar";
+import Categories from "@/components/ui/Categories";
+import BackendUrl from "@/constants/BackendUrl";
 
 export default function HomeScreen() {
-    const [search, setSearch] = useState('');
-    const [showSuggestions, setShowSuggestions] = useState(false);
+    const [search, setSearch] = useState("");
+    const [query, setQuery] = useState("");
+    const [category, setCategory] = useState("");
     const searchBarRef = useRef(null);
+    let timeoutRef = useRef<number>(0);
 
     const updateSearch = (search: string) => {
+        clearTimeout(timeoutRef.current);
         setSearch(search);
-        setShowSuggestions(search.length > 0);
+        timeoutRef.current = setTimeout(() => {
+            setQuery(search.trim().toLowerCase());
+        }, 500)
     };
 
-    const filteredData = sampleData.filter(item =>
-        item.toLowerCase().startsWith(search.toLowerCase())
+    return (
+        <View style={{ flex: 1 }}>
+            {Platform.OS === "ios" ? (
+                <SearchBar
+                    platform="ios"
+                    placeholder="Type Here..."
+                    onChangeText={updateSearch}
+                    value={search}
+                    clearIcon
+                    searchIcon={{ name: "search", size: 24 }}
+                    showCancel={true}
+                    ref={searchBarRef}
+                />
+            ) : (
+                <SearchBar
+                    platform="android"
+                    placeholder="Type Here..."
+                    onChangeText={updateSearch}
+                    value={search}
+                    ref={searchBarRef}
+                />
+            )}
+            <Categories categories={["All Categories", "Electronics", "somethingelse"]}setCategory={setCategory}/>
+            <Bazaar query={query} category={category}/>
+        </View>
     );
-
-    function handleSelect(item: string) {
-        setSearch(item);
-        setShowSuggestions(false);
-    }
-
-  return (
-      <View style={{ flex: 1 }}>
-          {Platform.OS === 'ios' ? (
-              <SearchBar platform="ios" placeholder="Type Here..." onChangeText={updateSearch} value={search} clearIcon showCancel={true} ref={searchBarRef} onFocus={() => setShowSuggestions(search.length > 0)} onBlur={() => setTimeout(() => setShowSuggestions(false), 100)} />
-          ) : (
-              <SearchBar platform="android" placeholder="Type Here..." onChangeText={updateSearch} value={search} ref={searchBarRef} onFocus={() => setShowSuggestions(search.length > 0)} onBlur={() => setTimeout(() => setShowSuggestions(false), 100)} />
-          )}
-
-          {/* Suggestions dropdown absolutely positioned */}
-          {showSuggestions && filteredData.length > 0 && (
-              <View style={styles.suggestionDropdown}>
-                  <FlatList keyboardShouldPersistTaps="handled" data={filteredData} keyExtractor={item => item} renderItem={({ item }) => (
-                      <TouchableOpacity onPress={() => handleSelect(item)} style={styles.suggestionTouchable} >
-                          <Text style={styles.suggestionText}>{item}</Text>
-                      </TouchableOpacity>
-                  )}
-              />
-              </View>
-          )}
-
-          <Text style={styles.titleContainer}>Brukdjah</Text>
-          <Link href="/login" style={styles.titleContainer}>login</Link>
-      </View>
-  );
 }
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
     titleContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         gap: 8,
         marginTop: 24,
     },
@@ -86,22 +67,22 @@ const styles = StyleSheet.create({
         width: 290,
         bottom: 0,
         left: 0,
-        position: 'absolute',
+        position: "absolute",
     },
     suggestionDropdown: {
-        position: 'absolute',
+        position: "absolute",
         top: 60, // Stays at 68 from the top
         left: 0,
         right: 0, // Stretch to both edges horizontally
         bottom: 0, // Take up all available space below 'top'
-        backgroundColor: '#fff',
+        backgroundColor: "#fff",
         borderWidth: 1,
-        borderColor: '#aaa',
+        borderColor: "#aaa",
         borderRadius: 8,
         elevation: 8,
         zIndex: 100,
         // maxHeight: 200, // Remove this to allow full height
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.18,
         shadowRadius: 10,
@@ -109,7 +90,7 @@ const styles = StyleSheet.create({
     suggestionTouchable: {
         padding: 14,
         borderBottomWidth: 1,
-        borderBottomColor: '#eee',
+        borderBottomColor: "#eee",
         borderRadius: 0, // Not rounded
     },
     suggestionText: {

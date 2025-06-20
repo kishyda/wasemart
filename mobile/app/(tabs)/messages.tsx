@@ -117,7 +117,7 @@ const renderItem = ({ item }: { item: Chat }) => {
     );
 };
 
-export const ChatListScreen: React.FC = () => {
+export default function ChatListScreen() {
     return (
         <View style={{ flex: 1, backgroundColor: '#f0f0f0' }}>
             <FlatList 

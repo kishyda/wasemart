@@ -24,9 +24,9 @@ export default function RootLayout() {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }} edges={['top']}>
-                    <Stack>
+                    <Stack screenOptions={{ title: 'bruh' }}>
                         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                        <Stack.Screen name="+not-found" />
+                        <Stack.Screen name="+not-found" options={{ headerShown: false }} />
                     </Stack>
                     <StatusBar style="auto" />
                 </SafeAreaView>

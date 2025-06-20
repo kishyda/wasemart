@@ -30,6 +30,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Home',
                     tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+                    headerShown: false,
                 }}
             />
             <Tabs.Screen
@@ -37,6 +38,15 @@ export default function TabLayout() {
                 options={{
                     title: 'Messages',
                     tabBarIcon: ({ color }) => <IconSymbol size={28} name="bubble.left.and.bubble.right.fill" color={color} />,
+                    headerShown: false,
+                }}
+            />
+            <Tabs.Screen 
+                name="create"
+                options={{
+                    title: 'Create',
+                    tabBarIcon: ({ color }) => <IconSymbol size={28} name="plus.app.fill" color={color} />,
+                    headerShown: false,
                 }}
             />
             <Tabs.Screen
@@ -44,6 +54,7 @@ export default function TabLayout() {
                 options={{
                     title: 'Settings',
                     tabBarIcon: ({ color }) => <IconSymbol size={28} name="gearshape.fill" color={color} />,
+                    headerShown: false,
                 }}
             />
         </Tabs>
